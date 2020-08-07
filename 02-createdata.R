@@ -5,17 +5,30 @@ data <-
 
 data %>% write_csv("data-raw/NFL_pbp_2009-2019.csv")
 
-#all fourth down plays from 2009-2019
+#all fourth down plays that teams go for it from 2009-2019
 fourthdown <-  
   data %>% 
-  filter(down == 4, !(play_type == "field_goal" | play_type == "punt" | play_type == "no_play")) %>% 
+  filter(down == 4, !(play_type == "field_goal" | play_type == "punt" | play_type == "no_play"), !(fourth_down_converted == 0 & fourth_down_failed == 0)) %>%
+  mutate(fourth_down_result = ifelse(fourth_down_converted == 1, "good", "failed")) %>% 
   select(play_id:game_id, drive_id, home_team:posteam, defteam, yardline_100, game_date, 
          qtr, quarter_seconds_remaining, ydstogo, yards_gained, ydsnet, down,
          play_type, total_home_score:score_differential, fourth_down_converted,
-         fourth_down_failed
+         fourth_down_failed, fourth_down_result
   )
 
 fourthdown %>% write_csv("data-clean/NFL_fourthdown_2009-2019.csv")
+
+#all fourth down plays that teams go for field goals from 2009-2019
+fieldgoal <-  
+  data %>% 
+  filter(down == 4, field_goal_attempt == 1, play_type == "field_goal") %>% 
+  select(play_id:game_id, drive_id, home_team:posteam, defteam, yardline_100, game_date, 
+         qtr, quarter_seconds_remaining, ydstogo, yards_gained, ydsnet, down,
+         play_type, total_home_score:score_differential, field_goal_result, kick_distance,
+         kicker_player_name, kicker_player_id
+  )
+
+fieldgoal %>% write_csv("data-clean/NFL_fielgoal_2009-2019.csv")
 
 #all drives from 2009-2019
 drives_start <- 
