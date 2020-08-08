@@ -1,3 +1,17 @@
+time_to_seconds <- function(time) {
+  # this functions takes in string time input and outputs the time in seconds
+  minutes <- 
+    str_sub(time, 1, str_locate(time, ":")[1, 1] - 1)
+  minutes <- 
+    as.numeric(minutes) * 60
+  seconds <- 
+    str_sub(time, str_locate(time, ":")[1, 1] + 1)
+  seconds <- 
+    as.numeric(seconds)
+  seconds_left <- minutes + seconds
+  seconds_left
+}
+
 create_prob_field_goal <- function(yardline, data) {
   # this functions takes in the yardline and outputs the probabilities for a field goal
   
@@ -47,6 +61,51 @@ create_prob_go <- function(yards_to_go, data) {
     )
   
   go_prob
+}
+
+create_prob_score <- function(quarter, timeleft, score, result, yardline, lower_seconds_bound, upper_seconds_bound, base_plays_data, last_plays_data) {
+  # this functions takes in the quarter, timeleft, score, and yardline and result and outputs the probabilities of winning
+  
+  base_plays1 <- 
+    base_plays_data %>% 
+    filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*score) & play_type == "kickoff") %>% 
+    group_by(game_id) %>% 
+    slice(n()) %>% 
+    ungroup()
+  
+  base_plays2 <- 
+    base_plays_data %>% 
+    filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*score) & yardline_100 < 85 & yardline_100 > 70) %>% 
+    group_by(game_id) %>% 
+    slice(1) %>% 
+    ungroup()
+  
+  base_plays <- rbind(base_plays1, base_plays2)
+  base_plays <- distinct(base_plays, game_id, .keep_all = TRUE)
+  
+  
+  combined <- 
+    base_plays %>% 
+    left_join(last_plays_data, by = "game_id") %>% 
+    mutate(
+      score_differential2 = ifelse(defteam == away_team, -score_differential2, score_differential2),
+      comeback = case_when(
+        score_differential2 > 0 ~ "win"
+      )
+    )
+  
+  prediction <- 
+    combined %>% 
+    count(comeback) %>% 
+    mutate(
+      count = sum(n),
+      prob = n/(sum(n)),
+      prob = round(prob, digits = 4)
+    ) %>% 
+    na.omit(prediction) %>% 
+    mutate(key = ifelse(result == 'yes', 1, 2))
+  
+  prediction
 }
 
 field_goal_prob <- create_prob_field_goal(37, fieldgoal)
