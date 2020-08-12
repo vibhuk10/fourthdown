@@ -63,26 +63,64 @@ create_prob_go <- function(yards_to_go, data) {
   go_prob
 }
 
-game_result_field_yes <- function(quarter, timeleft, score, result, yardline, lower_seconds_bound, upper_seconds_bound, base_plays_data, last_plays_data) {
+prob_game_result <- function(quarter, timeleft, score, yards_to_go, play_type, result, yardline, lower_seconds_bound, upper_seconds_bound, base_plays_data, last_plays_data) {
   # this functions takes in the quarter, timeleft, score, and yardline and result and outputs the probabilities of winning
   
-  base_plays1 <- 
-    base_plays_data %>% 
-    filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score+3)) & play_type == "kickoff") %>% 
-    group_by(game_id) %>% 
-    slice(n()) %>% 
-    ungroup()
+  if(play_type == "field_goal" & result == "yes") {
+    base_plays1 <- 
+      base_plays_data %>% 
+      filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score+3)) & play_type == "kickoff") %>% 
+      group_by(game_id) %>% 
+      slice(n()) %>% 
+      ungroup()
+    
+    base_plays2 <- 
+      base_plays_data %>% 
+      filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score+3)) & yardline_100 < 85 & yardline_100 > 70) %>% 
+      group_by(game_id) %>% 
+      slice(1) %>% 
+      ungroup()
+    
+    base_plays <- rbind(base_plays1, base_plays2)
+    base_plays <- distinct(base_plays, game_id, .keep_all = TRUE)
+  }
   
-  base_plays2 <- 
-    base_plays_data %>% 
-    filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score+3)) & yardline_100 < 85 & yardline_100 > 70) %>% 
-    group_by(game_id) %>% 
-    slice(1) %>% 
-    ungroup()
+  if(play_type == "field_goal" & result == "no") {
+    base_plays <- 
+      base_plays_data %>% 
+      filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score)) & yardline_100 < (100-((yardline+7)+5)) & yardline_100 > (100-((yardline+7)-5))) %>% 
+      group_by(game_id) %>% 
+      slice(1) %>% 
+      ungroup()
+  }
   
-  base_plays <- rbind(base_plays1, base_plays2)
-  base_plays <- distinct(base_plays, game_id, .keep_all = TRUE)
+  if(play_type == "go" & result == "no") {
+    base_plays <- 
+      base_plays_data %>% 
+      filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score)) & yardline_100 < (100-((yardline)+5)) & yardline_100 > (100-((yardline)-5))) %>% 
+      group_by(game_id) %>% 
+      slice(1) %>% 
+      ungroup()
+  }
   
+  if(play_type == "touchdown" & result == "yes") {
+    base_plays1 <- 
+      base_plays_data %>% 
+      filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score+7)) & play_type == "kickoff") %>% 
+      group_by(game_id) %>% 
+      slice(n()) %>% 
+      ungroup()
+    
+    base_plays2 <- 
+      base_plays_data %>% 
+      filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score+7)) & yardline_100 < 85 & yardline_100 > 70) %>% 
+      group_by(game_id) %>% 
+      slice(1) %>% 
+      ungroup()
+    
+    base_plays <- rbind(base_plays1, base_plays2)
+    base_plays <- distinct(base_plays, game_id, .keep_all = TRUE)
+  }
   
   combined <- 
     base_plays %>% 
@@ -108,69 +146,117 @@ game_result_field_yes <- function(quarter, timeleft, score, result, yardline, lo
   prediction
 }
 
-game_result_field_no <- function(quarter, timeleft, score, result, yardline, lower_seconds_bound, upper_seconds_bound, base_plays_data, last_plays_data) {
-  # this functions takes in the quarter, timeleft, score, and yardline and result and outputs the probabilities of winning
+prob_game_result_go_yes <- function(quarter, timeleft, score, yards_to_go, play_type, result, yardline, lower_seconds_bound, upper_seconds_bound, base_plays_data, last_plays_data, drives_data) {
   
-  base_plays <- 
-    base_plays_data %>% 
-    filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score)) & yardline_100 < ((yardline+7)+5) & yardline_100 > ((yardline+7)-5)) %>% 
-    group_by(game_id) %>% 
-    slice(1) %>% 
-    ungroup()
-  
-  combined <- 
-    base_plays %>% 
-    left_join(last_plays_data, by = "game_id") %>% 
-    mutate(
-      score_differential2 = ifelse(defteam == away_team, -score_differential2, score_differential2),
-      comeback = case_when(
-        score_differential2 > 0 ~ "win"
-      )
-    )
-  
-  prediction <- 
-    combined %>% 
-    count(comeback) %>% 
-    mutate(
-      count = sum(n),
-      prob = n/(sum(n)),
-      prob = round(prob, digits = 4)
-    ) %>% 
-    na.omit(prediction) %>% 
-    mutate(key = ifelse(result == 'yes', 1, 2))
-  
-  prediction
+    base_plays <- 
+      base_plays_data %>% 
+      filter(yardline_100 == (yardline-yards_to_go) & down == 1) %>% 
+      group_by(drive_id) %>% 
+      slice(1) %>% 
+      ungroup()
+    
+    drive_probs <- 
+      base_plays %>% 
+      left_join(drives_data, by = "drive_id") %>% 
+      count(drive_result) %>% 
+      na.omit() %>% 
+      mutate(prob = n/(sum(n)),
+             prob = round(prob, digits = 4))
+    
+    field_goal_win_prob <- 
+      prob_game_result(quarter = quarter,
+                       timeleft = timeleft,
+                       score = score,
+                       yards_to_go = yards_to_go,
+                       play_type = "field_goal",
+                       result = "yes",
+                       yardline = yardline,
+                       lower_seconds_bound = lower_seconds_bound,
+                       upper_seconds_bound = upper_seconds_bound,
+                       base_plays_data = base_plays_data,
+                       last_plays_data = last_plays_data)
+    field_goal_win_prob <- field_goal_win_prob$prob
+    
+    touchdown_win_prob <- 
+      prob_game_result(quarter = quarter,
+                       timeleft = timeleft,
+                       score = score,
+                       yards_to_go = yards_to_go,
+                       play_type = "touchdown",
+                       result = "yes",
+                       yardline = yardline,
+                       lower_seconds_bound = lower_seconds_bound,
+                       upper_seconds_bound = upper_seconds_bound,
+                       base_plays_data = base_plays_data,
+                       last_plays_data = last_plays_data)
+    touchdown_win_prob <- touchdown_win_prob$prob
+    
+    turnover_win_prob <- 
+      prob_game_result(quarter = quarter,
+                       timeleft = timeleft,
+                       score = score,
+                       yards_to_go = yards_to_go,
+                       play_type = "go",
+                       result = "no",
+                       yardline = yardline,
+                       lower_seconds_bound = lower_seconds_bound,
+                       upper_seconds_bound = upper_seconds_bound,
+                       base_plays_data = base_plays_data,
+                       last_plays_data = last_plays_data)
+    turnover_win_prob <- turnover_win_prob$prob
+      
 }
 
-field_goal_prob <- create_prob_field_goal(37, fieldgoal)
-field_goal_prob
+
+
+field_goal_prob <- create_prob_field_goal(20, fieldgoal)
 
 go_prob <- create_prob_go(10, fourthdown)
-go_prob
 
 prediction_field_yes <- 
-  game_result_field_yes(quarter = 4,
-                        timeleft = 200,
-                        score = -2,
-                        result = "yes",
-                        yardline = 20,
-                        lower_seconds_bound = -100,
-                        upper_seconds_bound = 100,
-                        base_plays_data = data,
-                        last_plays_data = last_plays
-                        ) 
+  prob_game_result(quarter = 4,
+                   timeleft = 200,
+                   score = -2,
+                   yards_to_go = 10,
+                   play_type = "field_goal",
+                   result = "yes",
+                   yardline = 20,
+                   lower_seconds_bound = -100,
+                   upper_seconds_bound = 100,
+                   base_plays_data = data,
+                   last_plays_data = last_plays
+  ) 
 
 prediction_field_no <-
-  game_result_field_no(quarter = 4,
-                        timeleft = 200,
-                        score = -2,
-                        result = "no",
-                        yardline = 20,
-                        lower_seconds_bound = -100,
-                        upper_seconds_bound = 100,
-                        base_plays_data = data,
-                        last_plays_data = last_plays
+  prob_game_result(quarter = 4,
+                   timeleft = 200,
+                   score = -2,
+                   yards_to_go = 10,
+                   play_type = "field_goal",
+                   result = "no",
+                   yardline = 20,
+                   lower_seconds_bound = -100,
+                   upper_seconds_bound = 100,
+                   base_plays_data = data,
+                   last_plays_data = last_plays
   ) 
-  
+
+prediction_go_no <-
+  prob_game_result(quarter = 4,
+                   timeleft = 200,
+                   score = -2,
+                   yards_to_go = 10,
+                   play_type = "field_goal",
+                   result = "no",
+                   yardline = 20,
+                   lower_seconds_bound = -100,
+                   upper_seconds_bound = 100,
+                   base_plays_data = data,
+                   last_plays_data = last_plays
+  ) 
+
+field_goal_prob
+go_prob
+
 prediction_field_yes
 prediction_field_no

@@ -47,7 +47,7 @@ drives_end <-
   slice(n()) %>% 
   mutate(score_differential_end = total_home_score-total_away_score,
          score_differential_end = ifelse(posteam == away_team, -score_differential_end, score_differential_end)) %>% 
-  select(drive_id, play_type, posteam, defteam, yardline_100, qtr, quarter_seconds_remaining, score_differential_end, desc, touchdown, safety, interception, fourth_down_failed, fumble_lost) %>% 
+  select(drive_id, play_type, posteam, defteam, yardline_100, qtr, quarter_seconds_remaining, score_differential_end, desc, touchdown, safety, fourth_down_failed, field_goal_result, extra_point_result, two_point_conv_result, interception, fourth_down_failed, fumble_lost) %>% 
   rename(yardline_end = yardline_100, qtr_end = qtr, qtr_secs_end = quarter_seconds_remaining, posteam_end = posteam)
 
 drives <- 
@@ -60,16 +60,20 @@ drives <-
          drive_result = case_when(
            interception == 1 ~ "turnover",
            fumble_lost == 1 ~ "turnover",
+           fourth_down_failed == 1 ~ "turnover",
+           field_goal_result == "missed" ~ "turnover",
+           field_goal_result == "blocked" ~ "turnover",
            safety == 1 ~ "safety",
+           any(is.na(extra_point_result)) == FALSE ~ "touchdown",
+           any(is.na(two_point_conv_result)) == FALSE ~ "touchdown",
            touchdown == 1 ~ "touchdown",
            play_type.y == "punt" ~ "punt",
-           play_type.y == "field_goal" ~ "field_goal"
-         ),
-         drive_result = ifelse(any(is.na(drive_result))== TRUE, "turnover", drive_result)
+           field_goal_result == "made" ~ "field_goal"
+         )
          ) %>% 
   filter(!(play_type.x == "field_goal" | play_type.x == "no_play" | play_type.y == "no_play" | check == 1 | score_differential > 8)) %>% 
-  select(play_id:score_differential_start, play_type.y, yardline_end:passed_time, drive_result) %>% 
-  rename(posteam = posteam_start, defteam = defteam.x, play_type = play_type.y, desc = desc.y) %>% 
+  select(play_id:score_differential_start, play_type.y, yardline_end:score_differential_end, score_differential:drive_result) %>% 
+  rename(posteam = posteam_start, defteam = defteam.x, play_type = play_type.y) %>% 
   na.omit()
 
 drives %>% write_csv("data-clean/NFL_drives_2009-2019.csv")
