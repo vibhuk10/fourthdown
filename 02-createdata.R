@@ -74,3 +74,12 @@ drives <-
 
 drives %>% write_csv("data-clean/NFL_drives_2009-2019.csv")
 
+last_plays <- 
+  data %>% 
+  select(game_id, total_home_score, total_away_score) %>%
+  group_by(game_id) %>% 
+  slice(n()) %>% 
+  ungroup() %>% 
+  mutate(score_differential2 = total_home_score-total_away_score)
+last_plays %>% write_csv("data-clean/last_plays_2009-2019.csv")
+
