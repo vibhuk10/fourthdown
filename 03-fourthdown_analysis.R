@@ -49,3 +49,11 @@ fourthdown %>%
   guides(fill = FALSE) +
   labs(title = "Amount of two point conversions attempted by each team between 2009-2019 and success rate")
 
+# what is the average distance of punts
+punts <- 
+  data %>% 
+  filter(play_type == "punt")
+
+punts2 <- 
+  data %>% 
+  filter(play_type == "punt" & punt_in_endzone == 1)
