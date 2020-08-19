@@ -29,7 +29,7 @@ ui <- pageWithSidebar(
   
   # Main panel for displaying outputs ----
   mainPanel(
-    plotOutput("probPlot", width = "auto", height = "560px"),
+    plotOutput("probPlot", width = "auto", height = "700px"),
   )
   
 )
@@ -38,6 +38,7 @@ server <- function(input, output) {
   
   output$probPlot <- renderPlot({
     
+    # gets user inputs
     qtrInput <- input$quarter
     timeInput <- input$time
     scoreInput <- input$score
@@ -46,6 +47,7 @@ server <- function(input, output) {
     lower_boundInput <- input$lower_bound
     upper_boundInput <- input$upper_bound
     
+    # creates table with all probabilities
     probabilities_table <- 
       display(
         quarter = qtrInput,
@@ -64,13 +66,14 @@ server <- function(input, output) {
     
     theme_set(theme_classic(base_size = 20))
     
+    # create graph of table 
     probabilities_table %>% 
       ggplot(aes(x = play_type, y = win_prob, fill = play_type)) +
       geom_col() +
-      geom_text(size = 7, aes(y = win_prob + 0.02, label = paste0(round(win_prob, 3) * 100, "% "))) +
-      geom_text(size = 5, aes(y = win_prob - 0.03, label = paste0(round(play_prob, 3) * 100, "% chance of "))) +
-      geom_text(size = 5, aes(y = win_prob - 0.045, label = play_name)) +
-      geom_text(size = 5, aes(y = win_prob - 0.07, label = paste0(" out of ", games, " games"))) +
+      geom_text(size = 7, aes(y = win_prob + 0.07, label = paste0(round(win_prob, 3) * 100, "% "))) +
+      geom_text(size = 5, aes(y = win_prob + 0.05, label = paste0(round(play_prob, 3) * 100, "% chance of "))) +
+      geom_text(size = 5, aes(y = win_prob + 0.035, label = play_name)) +
+      geom_text(size = 5, aes(y = win_prob + 0.015, label = paste0(" out of ", games, " games"))) +
       scale_fill_manual(values = c("#ff6666", "#70DBDB", "#FFE4B5")) + 
       guides(fill = FALSE) +
       labs(x = "", y = "Win probability") +
