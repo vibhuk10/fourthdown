@@ -1,0 +1,13 @@
+name: fourthdown
+title: fourthdown
+username:
+account: vibhuk10
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2703566
+bundleId: 3553613
+url: https://vibhuk10.shinyapps.io/fourthdown/
+when: 1598319770.25891
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: 02-createdata.R|03-fourthdown_analysis.R|README.md|test.R

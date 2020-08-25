@@ -428,7 +428,7 @@ amount_of_games <- function(yes_data, no_data) {
   games <- yes_data$count + no_data$count
 }
 
-display <- function(quarter, time, score, yards_to_go, yardline, lower_seconds_bound, upper_seconds_bound, field_data, go_data, base_plays_data, last_plays_data, drives_data) {
+display <- function(quarter, time, score, yards_to_go, yardline, lower_seconds_bound, upper_seconds_bound, field_data, go_data, punt_data, base_plays_data, last_plays_data, drives_data) {
   
   # convert time (string) to seconds (numeric)
   seconds <- 
@@ -449,7 +449,7 @@ display <- function(quarter, time, score, yards_to_go, yardline, lower_seconds_b
   # creates probability of punt not being blocked
   punt_prob <- 
     create_prob_punt(yardline = yardline, 
-                     data = data)
+                     data = punt_data)
   
   # creates win probability if you make the field goal
   prediction_field_yes <- 
@@ -656,6 +656,7 @@ display(quarter = 1,
         upper_seconds_bound = 100, 
         field_data = fieldgoal, 
         go_data = fourthdown,
+        punt_data = punt,
         base_plays_data = data,
         last_plays_data = last_plays,
         drives_data = drives

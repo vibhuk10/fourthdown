@@ -18,7 +18,7 @@ fourthdown <-
 
 fourthdown %>% write_csv("data-clean/NFL_fourthdown_2009-2019.csv")
 
-#all fourth down plays that teams go for field goals from 2009-2019
+#all plays that teams go for field goals from 2009-2019
 fieldgoal <-  
   data %>% 
   filter(down == 4, field_goal_attempt == 1, play_type == "field_goal") %>% 
@@ -29,6 +29,18 @@ fieldgoal <-
   )
 
 fieldgoal %>% write_csv("data-clean/NFL_fielgoal_2009-2019.csv")
+
+#all plays that teams punt from 2009-2019
+punt <-  
+  data %>% 
+  filter(play_type == "punt") %>% 
+  select(play_id:game_id, drive_id, home_team:posteam, defteam, yardline_100, game_date, 
+         qtr, quarter_seconds_remaining, ydstogo, yards_gained, ydsnet, down,
+         play_type, total_home_score:score_differential, field_goal_result, kick_distance,
+         kicker_player_name, kicker_player_id, punt_blocked
+  )
+
+punt %>% write_csv("data-clean/NFL_punt_2009-2019.csv")
 
 #all drives from 2009-2019
 drives_start <- 

@@ -1,7 +1,9 @@
+library(plyr)
 library(tidyverse)
 library(shiny)
 
 source("./04-fourthdown_probabilities.R")
+source("./01-loaddata.R")
 
 ui <- pageWithSidebar(
   
@@ -59,6 +61,7 @@ server <- function(input, output) {
         upper_seconds_bound = upper_boundInput,
         field_data = fieldgoal, 
         go_data = fourthdown,
+        punt_data = punt,
         base_plays_data = data,
         last_plays_data = last_plays,
         drives_data = drives
@@ -70,7 +73,7 @@ server <- function(input, output) {
     probabilities_table %>% 
       ggplot(aes(x = play_type, y = win_prob, fill = play_type)) +
       geom_col() +
-      geom_text(size = 7, aes(y = win_prob + 0.07, label = paste0(round(win_prob, 3) * 100, "% "))) +
+      geom_text(size = 8, aes(y = win_prob - 0.02, label = paste0(round(win_prob, 3) * 100, "% "))) +
       geom_text(size = 5, aes(y = win_prob + 0.05, label = paste0(round(play_prob, 3) * 100, "% chance of "))) +
       geom_text(size = 5, aes(y = win_prob + 0.035, label = play_name)) +
       geom_text(size = 5, aes(y = win_prob + 0.015, label = paste0(" out of ", games, " games"))) +
