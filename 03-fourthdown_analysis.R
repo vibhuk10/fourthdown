@@ -49,6 +49,29 @@ fourthdown %>%
   guides(fill = FALSE) +
   labs(title = "Amount of two point conversions attempted by each team between 2009-2019 and success rate")
 
+# epa for play_type on runs
+
+data %>% 
+  select(play_type, down, epa) %>% 
+  filter(play_type == "punt", down == 4) %>%
+  pull(epa) %>%
+  na.omit() %>% 
+  mean()
+
+data %>% 
+  select(play_type, down, epa, ydstogo) %>% 
+  filter(play_type == "pass" | play_type == "pass", down == 4, ydstogo <= 5) %>%
+  pull(epa) %>%
+  na.omit() %>% 
+  mean()
+
+# amount of times the fourth down conversion tool said there was a higher win probability with a run vs. a pass
+# in the 4th quarter with less than 5 minutes remaining and how many times did teams actually go for it in 2019
+
+
+
+
+
 # what is the average distance of punts
 punts <- 
   data %>% 
