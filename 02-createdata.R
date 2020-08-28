@@ -5,6 +5,13 @@ data <-
 
 data %>% write_csv("data-raw/NFL_pbp_2009-2019.csv")
 
+#full NFL play by play data 2009-2019
+data_small <- 
+  data %>% 
+  select()
+
+data_small %>% write_csv("data-clean/NFL_pbp_small_2009-2019.csv")
+
 #all fourth down plays that teams go for it from 2009-2019
 fourthdown <-  
   data %>% 

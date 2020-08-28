@@ -2,8 +2,8 @@ library(plyr)
 library(tidyverse)
 library(shiny)
 
-source("./04-fourthdown_probabilities.R")
 source("./01-loaddata.R")
+source("./04-fourthdown_probabilities.R")
 
 ui <- pageWithSidebar(
   
