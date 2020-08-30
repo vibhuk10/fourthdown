@@ -8,7 +8,7 @@ data %>% write_csv("data-raw/NFL_pbp_2009-2019.csv")
 #full NFL play by play data 2009-2019
 data_small <- 
   data %>% 
-  select()
+  select(play_id:quarter_seconds_remaining, qtr, down, ydstogo, ydsnet, play_type, yards_gained, field_goal_result:score_differential_post, punt_blocked, fourth_down_converted, fourth_down_failed, interception, safety, fumble_lost, touchdown, field_goal_attempt:punt_attempt, drive_id)
 
 data_small %>% write_csv("data-clean/NFL_pbp_small_2009-2019.csv")
 

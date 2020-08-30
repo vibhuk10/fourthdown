@@ -677,20 +677,20 @@ display <- function(quarter, time, score, yards_to_go, yardline, lower_seconds_b
   final
 }
 
-# display(quarter = 4,
-#         time = "0:12",
-#         score = -1,
-#         yards_to_go = 4,
-#         yardline = 4,
-#         lower_seconds_bound = -50,
-#         upper_seconds_bound = 50,
-#         field_data = fieldgoal,
-#         go_data = fourthdown,
-#         punt_data = punt,
-#         base_plays_data = data,
-#         last_plays_data = last_plays,
-#         drives_data = drives
-# )
+display(quarter = 4,
+        time = "5:00",
+        score = -6,
+        yards_to_go = 10,
+        yardline = 70,
+        lower_seconds_bound = -50,
+        upper_seconds_bound = 50,
+        field_data = fieldgoal,
+        go_data = fourthdown,
+        punt_data = punt,
+        base_plays_data = data_small,
+        last_plays_data = last_plays,
+        drives_data = drives
+)
 
  
 

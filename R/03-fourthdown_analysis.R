@@ -136,11 +136,11 @@ for (i in 1:nrow(graph_data)) {
   go_prob <- probs_table$win_prob[probs_table$play_type == "Go For It"]
   
   if(play_type == "punt") {
-    graph_data$prob_go_greater[i] <- go_prob > punt_prob + 0.05  
+    graph_data$prob_go_greater[i] <- go_prob > punt_prob  
   }
   
   if(play_type == "field_goal") {
-    graph_data$prob_go_greater[i] <- go_prob > field_prob + 0.05  
+    graph_data$prob_go_greater[i] <- go_prob > field_prob  
   }
     
 }
@@ -148,14 +148,37 @@ for (i in 1:nrow(graph_data)) {
 graph_data <- 
   graph_data %>% 
   mutate(prob_go_greater, ifelse(is.na(prob_go_greater), 0, prob_go_greater))
-  
+
 graph_data %>% 
   count(prob_go_greater)
+  
+team_graph_data <- 
+  graph_data %>% 
+  count(posteam, prob_go_greater) %>% 
+  filter(prob_go_greater == 1)
 
+graph_data %>% write_csv("data-clean/NFL_fourthdown_tool_data_5_2019.csv")
+graph_data %>% write_csv("data-clean/NFL_fourthdown_tool_data_10_2019.csv")
 graph_data %>% write_csv("data-clean/NFL_fourthdown_tool_data_2019.csv")
 
-graph_data <- read_csv("data-clean/NFL_fourthdown_tool_data_2019.csv")
+#graph amount of times the fourth down conversion tool said there was a higher win probability with a run vs. a pass
+# in the 4th quarter with less than 5 minutes remaining and how many times did teams actually go for it in 2019
+theme_set(theme_light(base_size = 16))
 
+graph_data <- read_csv("data-clean/NFL_fourthdown_tool_data_2019.csv")
+graph_data_five <- read_csv("data-clean/NFL_fourthdown_tool_data_5_2019.csv")
+graph_data_ten <- read_csv("data-clean/NFL_fourthdown_tool_data_10_2019.csv")
+
+fourth_graph <- 
+  graph_data %>%
+  count(posteam, prob_go_greater) %>% 
+  na.omit() %>% 
+  ggplot() +
+  geom_col(aes(x=posteam, y = n)) +
+  guides(fill = FALSE) +
+  labs(x = "fourth down result",title = "success rate of fourthdowns between 2009-2019")
+fourth_graph
+  
 # what is the average distance of punts
 punts <- 
   data %>% 
