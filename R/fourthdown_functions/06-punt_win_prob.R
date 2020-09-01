@@ -14,7 +14,7 @@ prob_game_result_punt <- function(quarter, timeleft, score, yards_to_go, play_ty
   
   base_plays <- 
     base_plays_data %>% 
-    filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score)) & yardline_100 > (ball_placement-5) & yardline_100 < (ball_placement+5)) %>% 
+    filter(qtr == quarter & quarter_seconds_remaining>(timeleft+lower_seconds_bound) & quarter_seconds_remaining<(timeleft+upper_seconds_bound) & score_differential == (-1*(score)) & yardline_100 < (100-(ball_placement-5)) & yardline_100 > (100-(ball_placement+5))) %>% 
     group_by(game_id) %>% 
     slice(1) %>% 
     ungroup()
@@ -70,3 +70,17 @@ prob_game_result_punt <- function(quarter, timeleft, score, yards_to_go, play_ty
   prediction
   
 }
+
+  prob_game_result_punt(quarter = 4,
+                        timeleft = 300,
+                        score = -7,
+                        yards_to_go = 1,
+                        play_type = "punt",
+                        result = "yes",
+                        yardline = 35,
+                        lower_seconds_bound = -50,
+                        upper_seconds_bound = 50,
+                        base_plays_data = data_small,
+                        last_plays_data = last_plays
+  ) 
+  
