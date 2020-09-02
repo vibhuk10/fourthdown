@@ -1,6 +1,6 @@
+library(shiny)
 library(plyr)
 library(tidyverse)
-library(shiny)
 
 ui <- pageWithSidebar(
   
@@ -16,9 +16,9 @@ ui <- pageWithSidebar(
                             "3rd" = 3,
                             "4th" = 4)),
     textInput("time", "Time Remaining in the Quarter:", "2:00"),
-    numericInput("score", "Score Differential:", -7),
+    numericInput("score", "Score Differential:", -3),
     numericInput("ydstogo", "Yards to Go:", 1),
-    numericInput("yardline", "Yardline:", 35),
+    numericInput("yardline", "Yardline:", 40),
     sliderInput("lower_bound", "Amount of Seconds for Lower Bound for Time Left:",
                 min = -900, max = 0, value = -50, step = 10),
     sliderInput("upper_bound", "Amount of Seconds for Upper Bound for Time Left:",

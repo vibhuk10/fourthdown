@@ -1,8 +1,8 @@
+library(shiny)
 library(plyr)
 library(tidyverse)
-library(shiny)
 
-source("./shinyapp/fourthdown_functions/10-source_functions.R")
+source("./fourthdown_functions/10-source_functions-app.R")
 
 server <- function(input, output) {
   

@@ -5,9 +5,6 @@ account: vibhuk10
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2703566
-bundleId: 3571447
+bundleId: 3581789
 url: https://vibhuk10.shinyapps.io/fourthdown/
-when: 1598757709.50713
-asMultiple: FALSE
-asStatic: FALSE
-ignoredFiles: README.md|data-raw/NFL_pbp_2009-2019.csv
+when: 1599001200.47257
