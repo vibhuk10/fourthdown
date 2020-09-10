@@ -151,7 +151,7 @@ fourth_graph <-
   guides(fill = FALSE) +
   theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
   labs(x = "",
-       y = "Amount of 4th Downs Teams Made the Wrong Choice",
+       y = "Number of 4th Downs Teams Made the Wrong Choice",
        title = "Do Teams Make the Right Choice on 4th Down?",
        subtitle = "Comparing how often teams made the right choice on 4th down according to the tool. Uses 
 all fourthdowns from one score games with less than 5 minutes remaning in 2018 and 2019")
