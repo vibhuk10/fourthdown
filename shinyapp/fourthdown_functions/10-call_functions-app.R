@@ -185,7 +185,8 @@ display <- function(quarter, time, score, yards_to_go, yardline, lower_seconds_b
         play_prob = c(prob_field, prob_go),
         win_prob = c(final_field, final_go),
         games = c(games_field, games_go),
-        play_name = c("Field Goal", "4th Down Conversion")
+        play_name = c("Field Goal", "4th Down Conversion"),
+        play_name2 = c("Kick a Field Goal!", "Go For It!")
       )
   }
   
@@ -197,7 +198,8 @@ display <- function(quarter, time, score, yards_to_go, yardline, lower_seconds_b
         play_prob = c(prob_go, prob_punt),
         win_prob = c(final_go, final_punt),
         games = c(games_go, games_punt),
-        play_name = c("4th Down Conversion", "Punt")
+        play_name = c("4th Down Conversion", "Punt"),
+        play_name2 = c("Go For It!", "Punt!")
       )
   }
   
@@ -209,7 +211,8 @@ display <- function(quarter, time, score, yards_to_go, yardline, lower_seconds_b
         play_prob = c(prob_field, prob_go, prob_punt),
         win_prob = c(final_field, final_go, final_punt),
         games = c(games_field, games_go, games_punt),
-        play_name = c("Field Goal", "4th Down Conversion", "Punt")
+        play_name = c("Field Goal", "4th Down Conversion", "Punt"),
+        play_name2 = c("Kick a Field Goal!", "Go For It!", "Punt!")
       )
   }
   

@@ -2,7 +2,7 @@ library(shiny)
 library(plyr)
 library(tidyverse)
 
-source("./fourthdown_functions/10-source_functions-app.R")
+source("./fourthdown_functions/11-source_functions-app.R")
 
 server <- function(input, output) {
   
@@ -14,8 +14,8 @@ server <- function(input, output) {
       score = input$score,
       ydstogo = input$ydstogo,
       yardline = input$yardline,
-      lower_bound = input$lower_bound,
-      upper_bound = input$upper_bound
+      lower_bound = -input$bounds,
+      upper_bound = input$bounds
     )
   })
   
@@ -40,10 +40,13 @@ server <- function(input, output) {
       last_plays_data = last_plays,
       drives_data = drives
     )
+  
     
   theme_set(theme_classic(base_size = 20))
   
   # create graph of table 
+  title_graph <- greatest_win_prob(probabilities_table)
+  
   probabilities_table %>% 
     ggplot(aes(x = play_type, y = win_prob, fill = play_type)) +
     geom_col() +
@@ -53,8 +56,7 @@ server <- function(input, output) {
     geom_text(size = 5, aes(y = win_prob + 0.015, label = paste0(" out of ", games, " games"))) +
     scale_fill_manual(values = c("#ff6666", "#70DBDB", "#FFE4B5")) + 
     guides(fill = FALSE) +
-    labs(x = "", y = "Win probability") +
-    ggtitle("Should you go for it?")+
+    labs(x = "", y = "Win Probability", title = title_graph) +
     theme(plot.title = element_text(hjust = 0.5)) +
     scale_y_continuous(labels = scales::percent)
     
