@@ -26,7 +26,7 @@ ui <- pageWithSidebar(
   
   # Main panel for displaying outputs ----
   mainPanel(
-    plotOutput("probPlot", width = "auto", height = "700px"),
+    plotOutput("probPlot", width = "auto", height = "600px"),
   )
   
 )
