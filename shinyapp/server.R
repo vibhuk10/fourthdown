@@ -50,10 +50,8 @@ server <- function(input, output) {
   probabilities_table %>% 
     ggplot(aes(x = play_type, y = win_prob, fill = play_type)) +
     geom_col() +
+    geom_text(size = 5, aes(y = win_prob + 0.1, label = paste0(round(play_prob, 3) * 100, "% chance of \n",play_name, "\n out of ", games, " games"))) +
     geom_text(size = 8, aes(y = win_prob - 0.05, label = paste0(round(win_prob, 3) * 100, "% "))) +
-    geom_text(size = 5, aes(y = win_prob + 0.15, label = paste0(round(play_prob, 3) * 100, "% chance of "))) +
-    geom_text(size = 5, aes(y = win_prob + 0.1, label = play_name)) +
-    geom_text(size = 5, aes(y = win_prob + 0.05, label = paste0(" out of ", games, " games"))) +
     scale_fill_manual(values = c("#ff6666", "#70DBDB", "#FFE4B5")) + 
     guides(fill = FALSE) +
     labs(x = "", y = "Win Probability", title = title_graph) +
