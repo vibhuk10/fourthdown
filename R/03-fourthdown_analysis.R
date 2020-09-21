@@ -1,5 +1,25 @@
 theme_set(theme_classic(base_size = 16))
 
+data %>% 
+  filter(down == 4 & !(play_type == "no_play" | play_type == "qb_kneel")) %>% 
+  count(play_type) %>% 
+  mutate(prob = n/sum(n)) %>% 
+  filter(play_type == "pass" | play_type == "run") %>% 
+  mutate(prob2 = sum(prob))
+
+data %>% 
+  filter(down == 4 & !(play_type == "no_play" | play_type == "qb_kneel" ) & (!qtr == 4)) %>% 
+  count(play_type) %>% 
+  mutate(prob = n/sum(n)) %>% 
+  filter(play_type == "pass" | play_type == "run") %>% 
+  mutate(prob2 = sum(prob))
+
+data %>% 
+  filter(down == 4 & !(play_type == "no_play" | play_type == "qb_kneel" ) & score_differential > -9) %>% 
+  count(play_type) %>% 
+  mutate(prob = n/sum(n)) %>% 
+  filter(play_type == "pass" | play_type == "run") %>% 
+  mutate(prob2 = sum(prob))
 # sample size at each yardage
 
 fourthdown %>% 
