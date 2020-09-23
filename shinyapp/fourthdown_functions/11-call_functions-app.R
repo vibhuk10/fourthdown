@@ -1,8 +1,12 @@
-display <- function(quarter, time, score, yards_to_go, yardline, lower_seconds_bound, upper_seconds_bound, field_data, go_data, punt_data, base_plays_data, last_plays_data, drives_data) {
+display <- function(quarter, time, score, yards_to_go, side, yardline_half, lower_seconds_bound, upper_seconds_bound, field_data, go_data, punt_data, base_plays_data, last_plays_data, drives_data) {
   
   # convert time (string) to seconds (numeric)
   seconds <- 
     time_to_seconds(time)
+  
+  #convert yardline as half to yardline 100
+  yardline <- 
+    convert_yardline(yardline_half, side)
   
   # creates probability of making field goal
   field_goal_prob <- 

@@ -18,6 +18,10 @@ ui <- pageWithSidebar(
     textInput("time", "Time Remaining in the Quarter:", "2:00"),
     numericInput("score", "Score Differential:", -3),
     numericInput("ydstogo", "Yards to Go:", 1),
+    selectInput("side", "Side of Field:", 
+                choices = c("OPPONENT" = "opp",
+                            "OWN" = "own")
+                            ),
     numericInput("yardline", "Yardline:", 40),
     sliderInput("bounds", "Expand Data: (Recommended: 50)",
                 min = 0, max = 900, value = 50, step = 10),

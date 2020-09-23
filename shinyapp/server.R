@@ -2,7 +2,7 @@ library(shiny)
 library(plyr)
 library(tidyverse)
 
-source("./fourthdown_functions/11-source_functions-app.R")
+source("./fourthdown_functions/12-source_functions-app.R")
 
 server <- function(input, output) {
   
@@ -13,7 +13,8 @@ server <- function(input, output) {
       time = input$time,
       score = input$score,
       ydstogo = input$ydstogo,
-      yardline = input$yardline,
+      side = input$side,
+      yardline_half = input$yardline,
       lower_bound = -input$bounds,
       upper_bound = input$bounds
     )
@@ -30,7 +31,8 @@ server <- function(input, output) {
       time = userInputs$time,
       score = userInputs$score,
       yards_to_go = userInputs$ydstogo,
-      yardline = userInputs$yardline,
+      side = userInputs$side,
+      yardline_half = userInputs$yardline_half,
       lower_seconds_bound = userInputs$lower_bound,
       upper_seconds_bound = userInputs$upper_bound,
       field_data = fieldgoal, 
