@@ -7,5 +7,5 @@
   
   Check out the comversion Tool here: https://vibhuk10.shinyapps.io/fourthdown/
   
-  Read the full article with methodology, data, and results here: https://medium.com/@vibhuk10/powerful-use-of-data-science-on-4th-downs-to-help-win-football-games-       5bfc6747fe7a
+  Read the full article with methodology, data, and results here: https://medium.com/@vibhuk10/powerful-use-of-data-science-on-4th-downs-to-help-win-football-games-5bfc6747fe7a
 
